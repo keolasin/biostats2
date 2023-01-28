@@ -1,0 +1,45 @@
+---
+title: "Lab1"
+author: "Matthew Reyes"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+# Biostats 241: Lab 1 Notes
+
+## Proof with Sets
+
+## R function factory
+
+```{r}
+## clock function, for length of clock arm of 5
+f <- function(t) {
+  y <- 5*sin(t*2*pi/12)
+  return(y)
+}
+
+f(2.5)
+
+## plotting that function, from (0:12)
+t <- seq(0,12,0.001)
+y <- f(t)
+plot(t,y)
+
+## if we have l as the length of the clock arm and r is the number of units of time per a 12 hour period, how to express y as a function of t,l, and r.
+f2 <- function(t,l=12,r=5) { # if we want to set a default value for l and r (to be 5 and 12 respectively)
+  y <- l*sin(t*2*pi/r)
+  return(y)
+}
+
+## Building a function factory - returning a function, from a function
+fun_fact <- function(l,r) {
+  f <- function(t) {
+    y <- l*sin(t*2*pi/r)
+    return(y)
+  }
+  
+  return(f)
+}
+
+fun_fact(5,12)(2.5) # first parens are the arguments l,r for the outermost function `fun_fact`, and the second parens (2.5) is the argument to the inner function `f`
+```

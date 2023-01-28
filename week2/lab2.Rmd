@@ -1,0 +1,84 @@
+---
+title: "Lab 2: Monty Hall problem"
+author: "Matthew Reyes"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r functions}
+
+# write functions in R to represent both of these. For the indicator, code a, b as optional arguments that default to 0,1
+
+indicator <- function(x, a=0, b=1) {
+  if (x >= a & x <= b){
+    return(1)
+  } else {
+    return(0)
+  }
+  
+  # or use return(ifelse(x >= a & x <= b, 1, 0)) ?ifelse()
+}
+
+f <- function(x) {
+  return(x^3 + x)
+}
+
+# define a vector of x
+x <- seq(-3, 3, 0.001)
+
+# since x is a vector, we need to use lapply to apply the function x to all values in the vector x
+y1 <- lapply(x, indicator)
+y2 <- lapply(x, f)
+plot(x,y2) # cubic function
+plot(x,y1) # indicator function
+
+# use these functions to write a new function that represents g(x) = 1[0,1](f(x))
+
+g <- function(x) {
+  return(
+    indicator(f(x))
+  )
+}
+
+
+y3 <- lapply(x, g)
+plot(x, y3) # plotting x, g
+```
+
+
+### Probability Theorems
+
+```{r showing-A}
+
+### simulating A exists in a 2-d grid
+
+library(tidyverse)
+
+expand_grid(
+  w1 = seq(0, 1, len=100),
+  w2 = seq(0, 1, len=100)
+) %>% mutate(X = ifelse(w1<0.5 & w2<0.5, 1, 0)) # mutate adds the column, for x where w1 and w2 < 0.5
+
+# use mutate to add a column to this dataframe indicating the value that X takes for each universe
+
+# sum over all the x to count the number of events occurring in this space
+
+df <- expand_grid(
+  w1 = seq(0,1, len=100),
+  w2 = seq(0,1,len=100)
+) %>% mutate(X = ifelse(w1 < 0.5 & w2 < 0.5, 1, 0))
+
+mean(df$X) # calculates our probability P(A) or P(X=1), counting where the event occurs (=1) in this space
+
+#
+
+df <- expand_grid(
+  w1 = seq(0,1, len=100),
+  w2 = seq(0,1,len=100)
+) %>% mutate(X = ifelse(w1 < 0.5 & w2 < 0.5, 1, 0)) %>%
+  mutate(Y = sin(w1*w2*2*pi)) # Defines a new random var Y and its function, sin(w1*w2*2*pi)
+
+# calculate the probability of Y > 0.5 in this space, or P(Y > 0.5)
+mean(df$Y > 0.5)
+
+```
